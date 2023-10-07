@@ -1,7 +1,7 @@
 import "../App.css";
 import { Position, Rnd } from "react-rnd"
 import ComponentMenu from "./ComponentMenu";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { PlusCircle, MinusCircle } from "lucide-react";
 import { CloneComponent, ComponentStyle, Components, ComponentsTypes, Dimension } from "../interfaces";
@@ -28,6 +28,14 @@ export default function TextComponent(props: Components) {
     const [position, _setPosition] = useState<Position>(props.position || {x: 0, y: 0});
 
     const rndRef = useRef<Rnd>(null);
+
+    useEffect(() => {
+        if(!props.style){
+            if(props.preferences.theme == "dark"){
+                setStyle({...style, textColor: "#FFF", borderColor: "#FFF"})
+            }
+        }
+    }, []);
 
     function showOrHideMenu(event: React.MouseEvent<HTMLElement, MouseEvent>) {
         event.stopPropagation();

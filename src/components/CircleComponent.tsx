@@ -1,7 +1,7 @@
 import "../App.css";
 import { Position, Rnd } from "react-rnd"
 import ComponentMenu from "./ComponentMenu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Components, Dimension, ComponentStyle, CloneComponent, ComponentsTypes } from "../interfaces";
 
 export default function CircleComponent(props: Components) {
@@ -18,6 +18,14 @@ export default function CircleComponent(props: Components) {
             borderColor:props.style?.borderColor || "#4b0082"
         }
     );
+
+    useEffect(() => {
+        if(!props.style){
+            if(props.preferences.theme == "dark"){
+                setStyle({...style, borderColor: "#FFF"})
+            }
+        }
+    }, []);
 
     function showOrHideMenu(event: React.MouseEvent<HTMLElement, MouseEvent>) {
         event.stopPropagation();

@@ -28,7 +28,8 @@ export interface Components {
     copy?: Function,
     style?: ComponentStyle,
     dimension?: Dimension,
-    position?: Position
+    position?: Position,
+    preferences: Preferences
 }
 
 export interface Dimension {

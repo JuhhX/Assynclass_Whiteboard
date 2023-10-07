@@ -1,7 +1,7 @@
 import "../App.css";
 import { Position, Rnd } from "react-rnd"
 import ComponentMenu from "./ComponentMenu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CloneComponent, Components, ComponentsTypes, Dimension } from "../interfaces";
 
 export default function VideoComponent(props: Components) {
@@ -16,6 +16,14 @@ export default function VideoComponent(props: Components) {
     const [position, _setPosition] = useState<Position>(props.position || {x: 0, y: 0});
 
     const [borderColor, setBorderColor] = useState<string>(props.style?.borderColor || "#4b0082");
+
+    useEffect(() => {
+        if(!props.style){
+            if(props.preferences.theme == "dark"){
+                setBorderColor("#FFF");
+            }
+        }
+    }, []);
 
     function loadVideo(){
 
@@ -65,7 +73,7 @@ export default function VideoComponent(props: Components) {
                     {
                         (!isVideoLoaded) ?
                             <>
-                                <input value={(videoURL) ? videoURL : ""} onInput={(text : any) => {setVideoURL(text.target.value)}} style={{height: "25%"}} placeholder="Url do video (Youtube)" />
+                                <input value={(videoURL) ? videoURL : ""} onInput={(text : any) => {setVideoURL(text.target.value)}} style={{height: "25%", background: "transparent", borderColor: (props.preferences.theme == "dark") ? "#FFF" : "#000", color: (props.preferences.theme == "dark") ? "#FFF" : "#000" }} placeholder="Url do video (Youtube)" />
                                 <button style={{height: "25%"}} onClick={() => {loadVideo()}}>OK</button>
                             </>
                         : 

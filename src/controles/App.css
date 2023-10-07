@@ -4,8 +4,10 @@ main {
     box-sizing: border-box;
     overflow: hidden;
     display: grid;
+    padding: 5%;
     grid-template-columns: 50% 50%;
-    grid-template-rows: 25% 25% 25% 25%;
+    grid-template-rows: 20% 20% 20% 20% 20%;
+    grid-row-gap: 5%
 }
 
 main .icons{
@@ -22,4 +24,16 @@ main .icons{
 
 main .icons:hover{
     background: rgb(37 99 235);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+  
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
 }

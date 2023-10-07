@@ -1,5 +1,5 @@
 import "./App.css";
-import splashscreen from "../assets/splashscreen_background.png"
+import splashscreen from "../assets/splashscreen_background2.png"
 import { invoke } from "@tauri-apps/api/tauri";
 import { useEffect, useState } from "react";
 import { emit } from "@tauri-apps/api/event";
@@ -10,7 +10,9 @@ function App() {
     const [preferences, setPreferences] = useState<string>();
 
     useEffect(() => {
-        invoke("load_preferences").then(pref => setPreferences(pref as string));
+        invoke("load_preferences").then(pref => {
+            setPreferences(pref as string);
+        });
     }, []);
 
     function sendPreferences(){

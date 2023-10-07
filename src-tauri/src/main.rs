@@ -1,8 +1,10 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::{Window, Manager};
+use std::path::Path;
 use std::fs;
+
+use tauri::{Window, Manager};
 
 #[derive(Clone, serde::Serialize)]
 struct Payload {
@@ -22,9 +24,12 @@ async fn close_splashscreen(window: Window){
 
 #[tauri::command]
 fn load_preferences() -> String{
-  let preferences = fs::read_to_string("../preferences/preferences.json").expect("Cannot read editor preferences!");
-
-  preferences
+  let preferences: String;
+  if Path::new("../preferences/preferences.json").exists(){
+    preferences = fs::read_to_string("../preferences/preferences.json").expect("Cannot read editor preferences!");
+    return preferences;
+  }
+  return "".into();
 }
 
 fn main() {

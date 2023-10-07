@@ -1,6 +1,6 @@
 import { Position, Rnd } from "react-rnd";
 import ComponentMenu from "./ComponentMenu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Components, Dimension, ComponentStyle, CloneComponent, ComponentsTypes } from "../interfaces";
 
 export default function ImageComponent(props: Components){
@@ -20,6 +20,14 @@ export default function ImageComponent(props: Components){
             borderColor: props.style?.borderColor || "#4b0082"
         }
     );
+
+    useEffect(() => {
+        if(!props.style){
+            if(props.preferences.theme == "dark"){
+                setStyle({...style, borderColor: "#FFF"})
+            }
+        }
+    }, []);
 
     function showOrHideMenu(event: React.MouseEvent<HTMLElement, MouseEvent>) {
         event.stopPropagation();
@@ -69,13 +77,13 @@ export default function ImageComponent(props: Components){
                 default={{ x: position.x, y: position.y, width: dimension.width, height: dimension.height }} 
                 style={{backgroundColor: style.backgroundColor, borderColor: style.borderColor}}
                 onResizeStop={(_e, _dir, ref) => {setDimension({width: ref.offsetWidth, height: ref.offsetHeight})}}>
-                <div onContextMenu={showOrHideMenu} onClick={() => { setIsMenuVisible(false) }} style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center", gap: "5px" }}>
+                <div onContextMenu={showOrHideMenu} onClick={() => { setIsMenuVisible(false) }} style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center", gap: "5px", color: props.preferences.theme == "dark" ? "#FFF" : "#000" }}>
                     {
                         (!isImageLoaded) ?
                             <div style={{width: "100%", height: "100%", fontSize: "3vmin", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
-                                <input value={(imageURL) ? imageURL : ""} onInput={(text : any) => {setImageURL(text.target.value); setIsImageLoaded(true)}} id="url" style={{height: "25%"}} placeholder="Url da imagem" />
+                                <input value={(imageURL) ? imageURL : ""} onInput={(text : any) => {setImageURL(text.target.value); setIsImageLoaded(true)}} id="url" style={{height: "25%", background: "transparent"}} placeholder="Url da imagem" />
                                 <p>ou</p>
-                                <label htmlFor="local" style={{border: "1px solid black", padding: "2%"}}>Selecionar um arquivo</label>
+                                <label htmlFor="local" style={{border: `1px solid ${props.preferences.theme == "dark" ? "#FFF" : "#000"}`, padding: "2%"}}>Selecionar um arquivo</label>
                                 <input type="file" accept=".png,.jpg" id="local" style={{display: "none"}} onChange={(e) => {loadImage(e)}}/>
                             </div>
                         : 

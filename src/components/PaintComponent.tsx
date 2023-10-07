@@ -41,7 +41,16 @@ export default function PaintComponent(props: Components) {
                 ctxRef.current = ctx;
             }
         }
-    }, [lineSize, lineColor])
+    }, [lineSize, lineColor]);
+
+    useEffect(() => {
+        if(!props.style){
+            if(props.preferences.theme == "dark"){
+                setBorderColor("#FFF");
+                setLineColor("#FFF");
+            }
+        }
+    }, []);
 
     useEffect(() => {
         if(canvasContent) {
@@ -198,7 +207,7 @@ export default function PaintComponent(props: Components) {
                             ref={canvasRef}
                             width={canvasSize.x}
                             height={canvasSize.y}
-                            style={{border: `${!showCanvasBorder ? "0px" : "1px"} solid black`}}    
+                            style={{border: `${!showCanvasBorder ? "0px" : "1px"} solid ${props.preferences.theme == "dark" ? "#FFF" : "#000"}`}}    
                             onMouseOver={() => {setIsMouseOver(true)}}
                             onMouseOut={() => {setIsMouseOver(false)}}
                         >

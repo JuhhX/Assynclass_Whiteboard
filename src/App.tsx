@@ -22,6 +22,7 @@ function App() {
 
   const [queue, setInQueue] = useState<ComponentInterface | null>(null);
   const [removeRequest, setRemoveRequest] = useState<number>(0);
+  const [changeThemeRequest, setChangeThemeRequest] = useState<number>(-1);
 
   const [components, setComponents] = useState<ComponentInterface[]>([]);
 
@@ -32,7 +33,11 @@ function App() {
 
   const [cloneData, setCloneData] = useState<CloneComponent | null>(null);
 
-  const [preferences, setPreferences] = useState<Preferences | null>(null);
+  const [preferences, setPreferences] = useState<Preferences>(
+    {
+      theme: "light"
+    }
+  );
 
   function closeApp() {
     const controlsWindow = WebviewWindow.getByLabel('controls');
@@ -116,11 +121,15 @@ function App() {
       setRemoveRequest(Math.random());
     })
 
-    await listen("preferences", (e: any) => {
-      console.log(JSON.parse(JSON.parse(e.payload+"").message));
-      setPreferences(JSON.parse(JSON.parse(e.payload+"").message));
+    await listen("change-theme", () => {
+      setChangeThemeRequest(Math.random());
     })
-    
+        
+    await listen("preferences", (e: any) => {
+      if(e.payload.message != "")
+        setPreferences(JSON.parse(e.payload.message));
+    })
+
   }
 
   useEffect(() => {
@@ -142,8 +151,10 @@ function App() {
   }, [requestScreenshoot])
 
   useEffect(() => {
-    console.log(preferences);
-  }, [preferences]);
+    if (changeThemeRequest != -1) {
+      setPreferences({theme: (preferences.theme == "dark") ? "light" : "dark"})
+    }
+  }, [changeThemeRequest])
 
   useEffect(() => {
     initListeners();
@@ -153,11 +164,21 @@ function App() {
     console.log(`
       LEMBRETES: 
         => Separar os menus dos componentes
+        => Salvar preferencia de tema depois de alterado
     `);
 
     window.addEventListener("contextmenu", (e: any) => {showOrHideMenu(e)});
     window.addEventListener("click", (_e) => {setIsMenuVisible(false)});
-  }, [])
+
+  }, []);
+  
+  useEffect(() => {
+    document.body.style.backgroundColor = (preferences?.theme == "dark") ? "#1E1E1E" : "#FFF";
+  }, [preferences]);
+
+  //#121212 ESCURO
+  //#1E1E1E CLARO
+  //#292929 MAIS CLARO
 
   return (
     <main>
@@ -179,17 +200,17 @@ function App() {
         {
           components.map(c => {
             if (c.type == ComponentsTypes.TEXTO)
-              return <TextComponent key={c.id} id={c.id} content={c.content} style={c.style} dimension={c.dimension} position={c.position} remove={removeComponent} copy={setClone} />
+              return <TextComponent key={c.id} id={c.id} content={c.content} style={c.style} dimension={c.dimension} position={c.position} preferences={preferences} remove={removeComponent} copy={setClone} />
             else if (c.type == ComponentsTypes.VIDEO)
-              return <VideoComponent key={c.id} id={c.id} content={c.content} style={c.style} dimension={c.dimension} position={c.position} remove={removeComponent} copy={setClone} />
+              return <VideoComponent key={c.id} id={c.id} content={c.content} style={c.style} dimension={c.dimension} position={c.position} preferences={preferences} remove={removeComponent} copy={setClone} />
             else if (c.type == ComponentsTypes.SQUARE)
-              return <SquareComponent key={c.id} id={c.id} content={c.content} style={c.style} dimension={c.dimension} position={c.position} remove={removeComponent} copy={setClone} />
+              return <SquareComponent key={c.id} id={c.id} content={c.content} style={c.style} dimension={c.dimension} position={c.position} preferences={preferences} remove={removeComponent} copy={setClone} />
             else if (c.type == ComponentsTypes.CIRCLE)
-              return <CircleComponent key={c.id} id={c.id} content={c.content} style={c.style} dimension={c.dimension} position={c.position} remove={removeComponent} copy={setClone} />
+              return <CircleComponent key={c.id} id={c.id} content={c.content} style={c.style} dimension={c.dimension} position={c.position} preferences={preferences} remove={removeComponent} copy={setClone} />
             else if (c.type == ComponentsTypes.PAINT)
-              return <PaintComponent key={c.id} id={c.id} content={c.content} style={c.style} dimension={c.dimension} position={c.position} remove={removeComponent} copy={setClone} />
+              return <PaintComponent key={c.id} id={c.id} content={c.content} style={c.style} dimension={c.dimension} position={c.position} preferences={preferences} remove={removeComponent} copy={setClone} />
             else if (c.type == ComponentsTypes.IMAGE)
-              return <ImageComponent key={c.id} id={c.id} content={c.content} style={c.style} dimension={c.dimension} position={c.position} remove={removeComponent} copy={setClone} />
+              return <ImageComponent key={c.id} id={c.id} content={c.content} style={c.style} dimension={c.dimension} position={c.position} preferences={preferences} remove={removeComponent} copy={setClone} />
           })
         }
       </section>
